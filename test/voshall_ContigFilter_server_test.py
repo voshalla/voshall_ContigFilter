@@ -71,6 +71,23 @@ class voshall_ContigFilterTest(unittest.TestCase):
         self.assertEqual(ret[0]['n_initial_contigs'], 3)
         self.assertEqual(ret[0]['n_contigs_removed'], 1)
         self.assertEqual(ret[0]['n_contigs_remaining'], 2)
+        
+    def test_filter_contigs_max_ok(self):
+        obj_name = "contigset.1"
+        contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
+        contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
+        contig3 = {'id': '3', 'length': 16, 'md5': 'md5', 'sequence': 'agcttttcatggattg'}
+        obj1 = {'contigs': [contig1, contig2, contig3], 'id': 'id', 'md5': 'md5', 'name': 'name', 
+                'source': 'source', 'source_id': 'source_id', 'type': 'type'}
+        self.getWsClient().save_objects({'workspace': self.getWsName(), 'objects':
+            [{'type': 'KBaseGenomes.ContigSet', 'name': obj_name, 'data': obj1}]})
+        ret = self.getImpl().filter_contigs_max(self.getContext(), {'workspace': self.getWsName(), 
+            'contigset_id': obj_name, 'min_length': '10', 'max_length': '15'})
+        obj2 = self.getWsClient().get_objects([{'ref': self.getWsName()+'/'+obj_name}])[0]['data']
+        self.assertEqual(len(obj2['contigs']), 1)
+        self.assertEqual(ret[0]['n_initial_contigs'], 3)
+        self.assertEqual(ret[0]['n_contigs_removed'], 2)
+        self.assertEqual(ret[0]['n_contigs_remaining'], 1)
 
     def test_filter_contigs_err1(self):
         with self.assertRaises(ValueError) as context:

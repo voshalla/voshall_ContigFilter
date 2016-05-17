@@ -217,6 +217,117 @@ Filter contigs in a ContigSet by DNA length
     }
 }
  
+
+
+=head2 filter_contigs_max
+
+  $return = $obj->filter_contigs_max($params)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$params is a voshall_ContigFilter.FilterContigsMaxParams
+$return is a voshall_ContigFilter.FilterContigsResults
+FilterContigsMaxParams is a reference to a hash where the following keys are defined:
+	workspace has a value which is a voshall_ContigFilter.workspace_name
+	contigset_id has a value which is a voshall_ContigFilter.contigset_id
+	min_length has a value which is an int
+	max_length has a value which is an int
+workspace_name is a string
+contigset_id is a string
+FilterContigsResults is a reference to a hash where the following keys are defined:
+	report_name has a value which is a string
+	report_ref has a value which is a string
+	new_contigset_ref has a value which is a voshall_ContigFilter.ws_contigset_id
+	n_initial_contigs has a value which is an int
+	n_contigs_removed has a value which is an int
+	n_contigs_remaining has a value which is an int
+ws_contigset_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$params is a voshall_ContigFilter.FilterContigsMaxParams
+$return is a voshall_ContigFilter.FilterContigsResults
+FilterContigsMaxParams is a reference to a hash where the following keys are defined:
+	workspace has a value which is a voshall_ContigFilter.workspace_name
+	contigset_id has a value which is a voshall_ContigFilter.contigset_id
+	min_length has a value which is an int
+	max_length has a value which is an int
+workspace_name is a string
+contigset_id is a string
+FilterContigsResults is a reference to a hash where the following keys are defined:
+	report_name has a value which is a string
+	report_ref has a value which is a string
+	new_contigset_ref has a value which is a voshall_ContigFilter.ws_contigset_id
+	n_initial_contigs has a value which is an int
+	n_contigs_removed has a value which is an int
+	n_contigs_remaining has a value which is an int
+ws_contigset_id is a string
+
+
+=end text
+
+=item Description
+
+
+
+=back
+
+=cut
+
+ sub filter_contigs_max
+{
+    my($self, @args) = @_;
+
+# Authentication: required
+
+    if ((my $n = @args) != 1)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function filter_contigs_max (received $n, expecting 1)");
+    }
+    {
+	my($params) = @args;
+
+	my @_bad_arguments;
+        (ref($params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 1 \"params\" (value was \"$params\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to filter_contigs_max:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'filter_contigs_max');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
+	method => "voshall_ContigFilter.filter_contigs_max",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'filter_contigs_max',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method filter_contigs_max",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'filter_contigs_max',
+				       );
+    }
+}
+ 
   
 
 sub version {
@@ -230,16 +341,16 @@ sub version {
             Bio::KBase::Exceptions::JSONRPC->throw(
                 error => $result->error_message,
                 code => $result->content->{code},
-                method_name => 'filter_contigs',
+                method_name => 'filter_contigs_max',
             );
         } else {
             return wantarray ? @{$result->result} : $result->result->[0];
         }
     } else {
         Bio::KBase::Exceptions::HTTP->throw(
-            error => "Error invoking method filter_contigs",
+            error => "Error invoking method filter_contigs_max",
             status_line => $self->{client}->status_line,
-            method_name => 'filter_contigs',
+            method_name => 'filter_contigs_max',
         );
     }
 }
@@ -364,6 +475,42 @@ a reference to a hash where the following keys are defined:
 workspace has a value which is a voshall_ContigFilter.workspace_name
 contigset_id has a value which is a voshall_ContigFilter.contigset_id
 min_length has a value which is an int
+
+
+=end text
+
+=back
+
+
+
+=head2 FilterContigsMaxParams
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+workspace has a value which is a voshall_ContigFilter.workspace_name
+contigset_id has a value which is a voshall_ContigFilter.contigset_id
+min_length has a value which is an int
+max_length has a value which is an int
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+workspace has a value which is a voshall_ContigFilter.workspace_name
+contigset_id has a value which is a voshall_ContigFilter.contigset_id
+min_length has a value which is an int
+max_length has a value which is an int
 
 
 =end text

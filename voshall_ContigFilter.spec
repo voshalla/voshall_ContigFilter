@@ -13,13 +13,19 @@ module voshall_ContigFilter {
         A string representing a workspace name.
     */
     typedef string workspace_name;
-
+    
     typedef structure {
         workspace_name workspace;
         contigset_id contigset_id;
         int min_length;
     } FilterContigsParams;
-
+    
+    typedef structure {
+        workspace_name workspace;
+        contigset_id contigset_id;
+        int min_length;
+        int max_length;
+    } FilterContigsMaxParams;
     /* 
         The workspace ID for a ContigSet data object.
         @id ws KBaseGenomes.ContigSet
@@ -39,4 +45,5 @@ module voshall_ContigFilter {
         Filter contigs in a ContigSet by DNA length
     */
     funcdef filter_contigs(FilterContigsParams params) returns (FilterContigsResults) authentication required;
+    funcdef filter_contigs_max(FilterContigsMaxParams params) returns (FilterContigsResults) authentication required;
 };
